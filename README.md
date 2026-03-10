@@ -26,6 +26,39 @@
 npm install
 ```
 
+## 获取石墨 Cookie
+
+推荐在浏览器里登录石墨网页版后，再从开发者工具里复制当前请求的 `Cookie`。
+
+步骤：
+
+1. 打开 [https://shimo.im](https://shimo.im) 并确认你已经登录
+2. 按 `F12` 打开开发者工具
+3. 切到 `Network` / `网络`
+4. 点击 `Fetch/XHR`
+5. 刷新页面
+6. 点开任意一个发往 `shimo.im` 的请求
+7. 在 `Headers` / `标头` 中找到 `Cookie`
+8. 复制整串 `Cookie` 值
+
+示例：
+
+```text
+shimo_sid=xxx; deviceId=xxx; ...
+```
+
+推荐只在当前终端里临时设置：
+
+```powershell
+$env:SHIMO_COOKIE='这里填整串 Cookie'
+```
+
+用完后清掉：
+
+```powershell
+Remove-Item Env:SHIMO_COOKIE
+```
+
 ## 1. 批量导出石墨文件夹
 
 先复制配置文件：
