@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const OBSIDIAN_ROOT = 'D:/Obsidian';
-const ROOT_DIR_PATTERN = /6-.*心流/;
+const OBSIDIAN_ROOT = process.env.OBSIDIAN_ROOT || 'D:/Obsidian';
+const ROOT_DIR_PATTERN = /6-.*\u5fc3\u6d41/;
 const FILE_YEAR_OVERVIEW = '\u603b\u89c8';
 const FILE_MONTH_INDEX = '\u76ee\u5f55';
 const FILE_ROOT_OVERVIEW = `00-${FILE_YEAR_OVERVIEW}.md`;

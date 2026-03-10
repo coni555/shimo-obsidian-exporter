@@ -1,10 +1,12 @@
 {
   "name": "shimo",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "build": "pkg index.js --output shimoExporter",
-    "test": "node test/shimo-utils.test.js"
+    "test": "node test/shimo-utils.test.js",
+    "nav:generate": "node scripts/generate-obsidian-nav.js",
+    "obsidian:import": "node scripts/import-shimo-folder-to-obsidian.js"
   },
   "license": "MIT",
   "dependencies": {

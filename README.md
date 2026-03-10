@@ -1,84 +1,138 @@
-# 石墨文档批量导出
+# shimo-obsidian-exporter
 
-这个工具通过石墨网页接口批量导出你有权限访问的文件，适合做一次性迁移或备份。
+把石墨文档批量导出为 Markdown，并按需导入 Obsidian。
 
-支持的默认导出格式：
+这个仓库目前包含三类能力：
 
-- 文档：`md`
-- 表格：`xlsx`
-- 幻灯片：`pptx`
-- 思维导图：`xmind`
-- 原生二进制文件：`doc` `docx` `ppt` `pptx` `pdf`
+- 批量导出石墨文件夹内容
+- 把石墨文件夹导入到指定 Obsidian 目录，并做基础去重
+- 为 Obsidian 中的年/月目录生成导航页和时间索引页
 
-## 改进点
+## 适用场景
 
-- 文档导出格式不再写死在代码里，可在 `config.json` 里配置。
-- 支持 `-c` / `--config` 指定配置文件，也兼容直接传入配置文件路径。
-- 本地文件比较改为基于 `mtime`，避免已有文件被重复下载。
-- 跳过旧文件时不再提前退出，避免接口返回顺序变化时漏导。
-- 增加了基础测试，方便快速验证参数解析和格式映射。
+- 想把石墨文档迁移到 Obsidian
+- 想把日记、反思、输出类文档批量导出为 Markdown
+- 已经有一部分内容在 Obsidian，想继续增量导入并去重
 
-## 使用方式
+## 环境要求
 
-1. 复制示例配置：
+- Windows
+- Node.js 18+
+- 已登录石墨网页版，并能获取当前登录态 `Cookie`
 
-```powershell
-Copy-Item config.example.json config.json
-```
-
-2. 登录石墨网页版，打开开发者工具，复制请求里的 `Cookie`。
-
-3. 编辑 `config.json`，至少填这几个字段：
-
-- `Path`
-- `Folder`（可选）
-- `MaxItems`（建议第一次先设成 `1` 或 `3` 做小范围验证）
-- `ExportFormats.document`（如果你想导出 `docx` 或 `pdf`，这里改掉）
-
-`Cookie` 推荐不要写进文件。这个项目现在会优先读取环境变量 `SHIMO_COOKIE`，只有环境变量不存在时才回退到 `config.json` 里的 `Cookie`。
-
-4. 安装依赖：
+## 安装
 
 ```powershell
 npm install
 ```
 
-5. 运行导出：
+## 1. 批量导出石墨文件夹
+
+先复制配置文件：
+
+```powershell
+Copy-Item config.example.json config.json
+```
+
+推荐用环境变量传 `Cookie`，不要把登录态写进文件：
+
+```powershell
+$env:SHIMO_COOKIE='这里填石墨 Cookie'
+```
+
+然后编辑 `config.json`，至少配置这些字段：
+
+- `Path`：导出目录
+- `Folder`：石墨文件夹 ID
+- `Recursive`：是否递归导出子文件夹
+- `MaxItems`：首次验证建议先设成 `1` 或 `3`
+- `ExportFormats.document`：文档导出格式，默认 `md`
+
+运行：
 
 ```powershell
 node index.js
-```
-
-更安全的 Windows PowerShell 用法：
-
-```powershell
-$env:SHIMO_COOKIE='这里填你的石墨 Cookie'
-node index.js
-```
-
-导出完成后可清掉当前终端里的环境变量：
-
-```powershell
-Remove-Item Env:SHIMO_COOKIE
 ```
 
 指定其他配置文件：
 
 ```powershell
-node index.js -c config-work.json
+node index.js -c config.local.json
 ```
 
-或：
+## 2. 导入到 Obsidian 并去重
+
+脚本：
+
+- `scripts/import-shimo-folder-to-obsidian.js`
+
+这个脚本会：
+
+- 读取指定石墨文件夹
+- 导出为 Markdown
+- 扫描目标 Obsidian 目录现有 Markdown
+- 先按标题归一化去重
+- 再按正文内容哈希去重
+- 只导入新增文件
+
+所需环境变量：
+
+- `SHIMO_COOKIE`
+- `SHIMO_FOLDER_ID`
+- `OBSIDIAN_TARGET_DIR`
+- `SHIMO_TEMP_DIR` 可选
+
+示例：
 
 ```powershell
-node index.js config-work.json
+$env:SHIMO_COOKIE='这里填石墨 Cookie'
+$env:SHIMO_FOLDER_ID='Wr3Dpy6Lonf8Ll3J'
+$env:OBSIDIAN_TARGET_DIR='D:\Obsidian\此刻·思源\5-Reflections-输出反思'
+npm run obsidian:import
+```
+
+## 3. 生成 Obsidian 导航页
+
+脚本：
+
+- `scripts/generate-obsidian-nav.js`
+
+这个脚本会在类似这样的目录结构上生成导航页：
+
+- 一级目录：`6-此刻`心流`
+- 二级目录：年份
+- 三级目录：月份
+- 四级目录：具体 Markdown
+
+会生成：
+
+- 根目录总览页
+- 根目录时间索引页
+- 每个年份的总览页
+- 每个月份的目录页
+
+可选环境变量：
+
+- `OBSIDIAN_ROOT`：默认是 `D:/Obsidian`
+
+运行：
+
+```powershell
+npm run nav:generate
+```
+
+或者：
+
+```powershell
+$env:OBSIDIAN_ROOT='D:\Obsidian'
+node scripts/generate-obsidian-nav.js
 ```
 
 ## 配置示例
 
 ```json
 {
-  "Cookie": "xxx",
+  "Cookie": "",
   "Path": "F:/shimoExport/Export",
   "Folder": "",
   "Recursive": true,
@@ -101,7 +155,17 @@ node index.js config-work.json
 npm test
 ```
 
-## 说明
+## 注意事项
 
-- 这个项目依赖石墨当前网页接口，接口或鉴权变化后可能需要重新适配。
-- `Cookie` 请只保存在本地，不要提交到仓库；优先使用环境变量 `SHIMO_COOKIE`。
+- 这个工具依赖石墨当前网页接口，石墨接口或鉴权变化后可能需要重新适配。
+- 请只在本地保存 `Cookie`，不要提交到仓库。
+- 仓库默认忽略了 `output`、`temp-import`、`node_modules` 等本地临时文件。
+
+## 当前包含的核心文件
+
+- `index.js`：导出入口
+- `lib/shimo-exporter.js`：导出核心逻辑
+- `lib/shimo-utils.js`：配置解析、文件名处理、类型映射
+- `scripts/import-shimo-folder-to-obsidian.js`：导入 Obsidian 并去重
+- `scripts/generate-obsidian-nav.js`：生成导航页
+- `test/shimo-utils.test.js`：基础测试
