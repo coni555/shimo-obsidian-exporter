@@ -2,6 +2,8 @@
 
 把石墨文档批量导出为 Markdown，并按需导入 Obsidian。
 
+> 把这个 GitHub 项目接入小龙虾、Codex 或 Claude Code，跟着流程一步步走，就能实现自动化执行。
+
 ## 致谢与来源
 
 这个仓库基于原项目 [yangkghjh/shimo](https://github.com/yangkghjh/shimo) 的思路继续改编和优化，不是对原仓库的原样搬运。
