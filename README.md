@@ -2,7 +2,7 @@
 
 把石墨文档批量导出为 Markdown，并按需导入 Obsidian。
 
-> 把这个 GitHub 项目接入小龙虾、Codex 或 Claude Code，跟着流程一步步走，就能实现自动化执行。
+> 把这个 GitHub 项目链接喂给小龙虾、Codex 或 Claude Code，跟着流程一步步走，就能实现自动化执行。
 
 ## 致谢与来源
 
