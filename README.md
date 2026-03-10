@@ -2,6 +2,22 @@
 
 把石墨文档批量导出为 Markdown，并按需导入 Obsidian。
 
+## 致谢与来源
+
+这个仓库基于原项目 [yangkghjh/shimo](https://github.com/yangkghjh/shimo) 的思路继续改编和优化，不是对原仓库的原样搬运。
+
+当前仓库额外补充了这些偏本地工作流的能力：
+
+- 更安全的本地登录态使用方式
+- 更稳的 Windows 下载兜底
+- 导入 Obsidian 时的标题/内容去重
+- 年份 / 月份导航页生成
+- 更适合重复使用的脚本、README、CHANGELOG 和 release 结构
+
+更完整的出处说明见：
+
+- [ATTRIBUTION.md](./ATTRIBUTION.md)
+
 这个仓库目前包含三类能力：
 
 - 批量导出石墨文件夹内容
