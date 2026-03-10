@@ -8,3 +8,4 @@ files*
 .vscode
 shimo
 config*.json
+!config.example.json

@@ -1,0 +1,25 @@
+{
+  "@Cookie": "从浏览器开发者工具里复制石墨的 Cookie",
+  "Cookie": "",
+  "@Path": "导出文件保存路径",
+  "Path": "F:/shimoExport/Export",
+  "@Folder": "可选，指定要导出的文件夹 ID；留空表示导出可访问的顶层列表",
+  "Folder": "",
+  "@Recursive": "是否递归导出子文件夹",
+  "Recursive": true,
+  "@Sleep": "每次导出之间的等待时间，单位毫秒",
+  "Sleep": 500,
+  "@Lasttime": "仅导出更新时间晚于该时间戳的文件，0 表示全量导出",
+  "Lasttime": 0,
+  "@Retry": "单个文件失败后的重试次数",
+  "Retry": 3,
+  "@MaxItems": "本次最多导出多少个文件，0 表示不限制",
+  "MaxItems": 0,
+  "@ExportFormats": "按类型指定导出格式；document 可选 md/docx/pdf 等，具体取决于石墨当前接口能力",
+  "ExportFormats": {
+    "document": "md",
+    "sheet": "xlsx",
+    "slide": "pptx",
+    "mindmap": "xmind"
+  }
+}
