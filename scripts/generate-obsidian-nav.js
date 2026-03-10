@@ -2,7 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 const OBSIDIAN_ROOT = process.env.OBSIDIAN_ROOT || 'D:/Obsidian';
-const ROOT_DIR_PATTERN = /6-.*\u5fc3\u6d41/;
+const OBSIDIAN_NAV_ROOT = process.env.OBSIDIAN_NAV_ROOT || '';
+const ROOT_DIR_PATTERN = new RegExp(
+  process.env.OBSIDIAN_NAV_PATTERN || '6-.*\\u5fc3\\u6d41',
+);
 const FILE_YEAR_OVERVIEW = '\u603b\u89c8';
 const FILE_MONTH_INDEX = '\u76ee\u5f55';
 const FILE_ROOT_OVERVIEW = `00-${FILE_YEAR_OVERVIEW}.md`;
@@ -10,7 +13,15 @@ const FILE_TIMELINE = '00-\u65f6\u95f4\u7d22\u5f15.md';
 const FILE_OLD_YEAR = '00-\u5e74\u4efd\u603b\u89c8.md';
 const FILE_OLD_MONTH = '00-\u6708\u4efd\u76ee\u5f55.md';
 
-function findHeartflowRoot() {
+function findNavigationRoot() {
+  if (OBSIDIAN_NAV_ROOT) {
+    if (!fs.existsSync(OBSIDIAN_NAV_ROOT)) {
+      throw new Error(`Configured OBSIDIAN_NAV_ROOT does not exist: ${OBSIDIAN_NAV_ROOT}`);
+    }
+
+    return OBSIDIAN_NAV_ROOT;
+  }
+
   const queue = [OBSIDIAN_ROOT];
 
   while (queue.length > 0) {
@@ -31,7 +42,9 @@ function findHeartflowRoot() {
     }
   }
 
-  throw new Error('Could not find the heartflow directory in Obsidian.');
+  throw new Error(
+    'Could not find the target note directory in Obsidian. Set OBSIDIAN_NAV_ROOT or adjust OBSIDIAN_NAV_PATTERN.',
+  );
 }
 
 function getDayNumber(fileName) {
@@ -86,12 +99,13 @@ function removeIfExists(filePath) {
 }
 
 function generateNavigation() {
-  const root = findHeartflowRoot();
+  const root = findNavigationRoot();
+  const rootName = path.basename(root);
   const yearDirs = listDirectories(root);
   let totalNoteCount = 0;
 
   const rootOverview = [
-    '# \u6b64\u523b`\u5fc3\u6d41 \u603b\u89c8',
+    `# ${rootName} ${FILE_YEAR_OVERVIEW}`,
     '',
     `> \u66f4\u65b0\u65f6\u95f4\uff1a${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
     '',
@@ -104,7 +118,7 @@ function generateNavigation() {
   const timeline = [
     '# \u65f6\u95f4\u7d22\u5f15',
     '',
-    '\u6309\u65f6\u95f4\u6b63\u5e8f\u6392\u5217\uff0c\u65b9\u4fbf\u4ece 2025 \u5e74 3 \u6708\u4e00\u8def\u56de\u770b\u5230 2026 \u5e74 2 \u6708\u3002',
+    '\u6309\u65f6\u95f4\u6b63\u5e8f\u6392\u5217\uff0c\u65b9\u4fbf\u987a\u7740\u65f6\u95f4\u7ebf\u56de\u770b\u6574\u4e2a\u76ee\u5f55\u4e0b\u7684\u7b14\u8bb0\u3002',
     '',
   ];
 
@@ -192,7 +206,6 @@ function generateNavigation() {
     '',
     `- \u5e74\u4efd\u6570\uff1a${yearDirs.length}`,
     `- \u603b\u6587\u6863\u6570\uff1a${totalNoteCount}`,
-    '- \u8986\u76d6\u65f6\u95f4\uff1a2025-03-12 \u81f3 2026-02-28',
   );
 
   writeUtf8(path.join(root, FILE_ROOT_OVERVIEW), rootOverview);

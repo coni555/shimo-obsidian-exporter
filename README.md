@@ -11,7 +11,7 @@
 - 更安全的本地登录态使用方式
 - 更稳的 Windows 下载兜底
 - 导入 Obsidian 时的标题/内容去重
-- 年份 / 月份导航页生成
+- 面向归档型目录结构的导航页生成
 - 更适合重复使用的脚本、README、CHANGELOG 和 release 结构
 
 更完整的出处说明见：
@@ -22,7 +22,7 @@
 
 - 批量导出石墨文件夹内容
 - 把石墨文件夹导入到指定 Obsidian 目录，并做基础去重
-- 为 Obsidian 中的年/月目录生成导航页和时间索引页
+- 为按年份 / 月份归档的 Obsidian Markdown 目录生成导航页和时间索引页
 
 ## 适用场景
 
@@ -135,8 +135,8 @@ node index.js -c config.local.json
 
 ```powershell
 $env:SHIMO_COOKIE='这里填石墨 Cookie'
-$env:SHIMO_FOLDER_ID='Wr3Dpy6Lonf8Ll3J'
-$env:OBSIDIAN_TARGET_DIR='D:\Obsidian\此刻·思源\5-Reflections-输出反思'
+$env:SHIMO_FOLDER_ID='这里填石墨文件夹 ID'
+$env:OBSIDIAN_TARGET_DIR='D:\Obsidian\YourVault\Reflections'
 npm run obsidian:import
 ```
 
@@ -148,7 +148,7 @@ npm run obsidian:import
 
 这个脚本会在类似这样的目录结构上生成导航页：
 
-- 一级目录：`6-此刻`心流`
+- 一级目录：某个笔记归档根目录
 - 二级目录：年份
 - 三级目录：月份
 - 四级目录：具体 Markdown
@@ -162,7 +162,9 @@ npm run obsidian:import
 
 可选环境变量：
 
+- `OBSIDIAN_NAV_ROOT`：直接指定要生成导航页的目标目录，最推荐
 - `OBSIDIAN_ROOT`：默认是 `D:/Obsidian`
+- `OBSIDIAN_NAV_PATTERN`：当你不想手动指定目标目录时，用目录名正则参与自动匹配
 
 运行：
 
@@ -173,7 +175,7 @@ npm run nav:generate
 或者：
 
 ```powershell
-$env:OBSIDIAN_ROOT='D:\Obsidian'
+$env:OBSIDIAN_NAV_ROOT='D:\Obsidian\YourVault\Journal'
 node scripts/generate-obsidian-nav.js
 ```
 
